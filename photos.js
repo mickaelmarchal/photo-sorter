@@ -5,6 +5,12 @@ var mkdirp = require('mkdirp');
 var ExifImage = require('exif').ExifImage;
 
 
+// Get base directory from args - use current dir if not specified
+var baseDir = '.';
+if(typeof process.argv[2] != 'undefined') {
+  baseDir = process.argv[2];
+}
+
 /**
  * Read exif data for given file
  * If file is not a picture, return an exception
@@ -13,7 +19,7 @@ var getPhotoTakenDate = function(filename) {
 
   var deferred = q.defer();
 
-  new ExifImage({image: filename}, function (error, exifData) {
+  new ExifImage({image: baseDir + '/' + filename}, function (error, exifData) {
     if (error) {
       deferred.reject(error);
     } else {
@@ -56,19 +62,17 @@ var moveToDateDirectory = function(filename, date) {
   var deferred = q.defer();
   var dirName = date.toISOString().substring(0, 10);
 
-  console.log('moving to '+dirName);
-
   // create directory (if not existing)
-  mkdirp(dirName, function(error) {
+  mkdirp(baseDir + '/' + dirName, function(error) {
 
       if(error) {
-        deferred.reject('Could not create / access directory "' + dirName + '": ' + error);
+        deferred.reject('Could not create / access directory "' + baseDir + '/' + dirName + '": ' + error);
       }
 
       // move file to directory
-      fs.rename(filename, dirName + '/' + filename, function(error) {
+      fs.rename(baseDir + '/' + filename, baseDir + '/' + dirName + '/' + filename, function(error) {
         if(error) {
-          deferred.reject('Could not move file "' + filename + '" to directory "' + dirName + '"');
+          deferred.reject('Could not move file "' + filename + '" to directory "' + baseDir + '/' + dirName + '"');
         } else {
           deferred.resolve({
             dirName: dirName,
@@ -83,9 +87,10 @@ var moveToDateDirectory = function(filename, date) {
 };
 
 
-fs.readdir('.', function(error, files) {
+
+
+fs.readdir(baseDir, function(error, files) {
   if (! error) {
-    console.log(files);
 
     // Find images and read exif data
     for(var i = 0; i < files.length; i++) {
@@ -93,7 +98,6 @@ fs.readdir('.', function(error, files) {
 
         getPhotoTakenDate(files[i]).then(
           function(data) {
-            console.log(data.filename + ': ' + data.takenDate.toISOString());
             moveToDateDirectory(data.filename, data.takenDate).then(
               function(data) {
                 console.log('File "' + data.filename + '" moved to directory "' + data.dirName + '"');
