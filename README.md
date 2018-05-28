@@ -15,11 +15,11 @@ Just use `npm install` to install dependencies.
 
 Sort pictures in the current directory:
 
-    node photos.js
+    node index.js
 
 Sort pictures in a provide directory:
 
-    node photos.js /path/to/directory
+    node index.js /path/to/directory
 
 
 ## Example
@@ -37,7 +37,7 @@ A folder "MyPictures" containing various files:
 
 Run the script with the folder path as first argument:
 
-`node photos.js /path/to/MyPictures`
+`node index.js /path/to/MyPictures`
 
 
 The pictures will automatically sorted by date:

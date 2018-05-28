@@ -2,15 +2,16 @@
   "name": "photo-sorter",
   "version": "1.0.0",
   "description": "Simple script to sort a bunch of photos into date directories",
-  "main": "photos.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Mickael Marchal",
   "license": "MIT",
   "dependencies": {
-    "exif": "^0.6.0",
+    "exiftool": "0.0.3",
     "mkdirp": "^0.5.1",
-    "q": "^1.4.1"
+    "progress": "^2.0.0",
+    "recursive-readdir": "^2.2.2"
   }
 }
