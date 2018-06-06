@@ -23,7 +23,7 @@ function handleFile(idx: number, filesList: string[], bar: any, callback: any) {
     .finally(() => {
       bar.tick();
       if ((idx + 1) < filesList.length) {
-        handleFile(idx + 1, filesList, bar, resolve);
+        handleFile(idx + 1, filesList, bar, callback);
       } else {
         callback();
       }
