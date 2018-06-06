@@ -1,16 +1,14 @@
-const fs = require('fs');
-const recursive = require("recursive-readdir");
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
+import * as recursive from 'recursive-readdir';
 
 /**
  * Get the list of all files in a directory and sub directories
  * Just a Promise wrapper around "recursive" npm package.
- * 
- * @param {string} baseDir 
  */
-exports.getFilesListInDirTree = (baseDir) =>
-    new Promise((resolve, reject) => {
-        recursive(baseDir, (err, files) => {
+export function getFilesListInDirTree(baseDir: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+        recursive(baseDir, (err: any, files: any) => {
             if (err) {
                 reject(err);
             } else {
@@ -18,19 +16,21 @@ exports.getFilesListInDirTree = (baseDir) =>
             }
         });
     });
-
+}
 
 /**
  * Get the absolute path of a file
- * @param {string} filePath
  */
-exports.getAbsolutePath = (filePath) => path.resolve(filePath);
+export function getAbsolutePath(filePath: string) {
+    return path.resolve(filePath);
+}
 
 /**
  * Extract the filename from a full path 
- * @param {string} fullPath 
  */
-exports.getFilename = (fullPath) => fullPath.replace(/^.*[\\\/]/, '');
+export function getFilename(fullPath: string) {
+    return fullPath.replace(/^.*[\\\/]/, '');
+}
 
 
 /**
@@ -39,11 +39,12 @@ exports.getFilename = (fullPath) => fullPath.replace(/^.*[\\\/]/, '');
  * @param {string} baseDir 
  * @param {{takenDate: string, filename: string}} fileInfo
  */
-exports.getTargetDirectory = (baseDir, fileInfo) => {
+export function getTargetDirectory(baseDir: string, fileInfo: any) {
+    let dirName = '';
     if (fileInfo.takenDate instanceof Date) {
-        var dirName = 'sorted' + path.sep + fileInfo.takenDate.toISOString().substring(0, 10);
+        dirName = 'sorted' + path.sep + fileInfo.takenDate.toISOString().substring(0, 10);
     } else if (typeof fileInfo.takenDate === null) {
-        var dirName = 'unsorted';
+        dirName = 'unsorted';
     }
 
     return baseDir + path.sep + dirName + path.sep + exports.getFilename(fileInfo.filename);
@@ -53,8 +54,8 @@ exports.getTargetDirectory = (baseDir, fileInfo) => {
  * Move the given file to a directory corresponding to given date
  * (directory is created if not exists)
  */
-exports.moveFileToDirectory = (baseDir, fileInfo, bar) =>
-    new Promise((resolve, reject) => {
+export function moveFileToDirectory(baseDir: string, fileInfo: any, bar: any) {
+    return new Promise((resolve, reject) => {
         bar.interrupt(fileInfo.filename + ': ' + fileInfo.takenDate + ' => ' + exports.getTargetDirectory(baseDir, fileInfo));
 
         /*
@@ -80,6 +81,6 @@ exports.moveFileToDirectory = (baseDir, fileInfo, bar) =>
         });*/
 
     });
-
+}
 
 

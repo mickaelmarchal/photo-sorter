@@ -1,45 +1,47 @@
-var exif = require('exiftool');
-var fs = require('fs');
+import * as exif from 'exiftool';
+import * as fs from 'fs';
 
 /**
  * Get the date when the picture / video was taken
  */
-exports.getTakenDate = (filename, bar) =>
+export function getTakenDate(filename: string, bar: any): Promise<any> {
 
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
 
         // TODO error handling (must create a proper data structure first)
-        fs.readFile(filename, (err, data) => {
+        fs.readFile(filename, (readErr, data) => {
 
             if (bar) {
                 bar.tick();
             }
 
-            if (err) {
-                reject(err);
+            if (readErr) {
+                reject(readErr);
                 if (bar) {
                     bar.tick();
                 }
             } else {
 
-                exif.metadata(data, (err, metadata) => {
+                exif.metadata(data, (exifErr: any, metadata: any) => {
 
                     if (bar) {
                         bar.tick();
                     }
 
-                    if (err) {
-                        reject(err);
+                    if (exifErr) {
+                        reject(exifErr);
                     } else {
+
+                        let takenDate = null;
                         try {
                             // retrieve date and convert in a Date object
-                            var takenDateRaw = metadata['date/timeOriginal'];
+                            let takenDateRaw = metadata['date/timeOriginal'];
                             if (typeof takenDateRaw === 'undefined') {
                                 takenDateRaw = metadata.createDate;
                             }
 
                             // TODO handle timezones
-                            var takenDate = new Date(takenDateRaw.replace(
+                            takenDate = new Date(takenDateRaw.replace(
                                 /^([0-9]{4}):([0-9]{2}):([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})$/i,
                                 "$1-$2-$3T$4:$5:$6"
                             ));
@@ -49,8 +51,8 @@ exports.getTakenDate = (filename, bar) =>
                             }
 
                             resolve({
-                                filename: filename,
-                                takenDate: takenDate
+                                filename,
+                                takenDate
                             });
 
                         } catch (e) {
@@ -61,3 +63,4 @@ exports.getTakenDate = (filename, bar) =>
             }
         });
     });
+}
