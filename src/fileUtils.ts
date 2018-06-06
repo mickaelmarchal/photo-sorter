@@ -56,7 +56,9 @@ export function getTargetDirectory(baseDir: string, fileInfo: any) {
  */
 export function moveFileToDirectory(baseDir: string, fileInfo: any, bar: any) {
     return new Promise((resolve, reject) => {
-        bar.interrupt(fileInfo.filename + ': ' + fileInfo.takenDate + ' => ' + exports.getTargetDirectory(baseDir, fileInfo));
+        bar.interrupt('[OK] ' + fileInfo.filename + ': ' + fileInfo.takenDate + ' => ' + exports.getTargetDirectory(baseDir, fileInfo));
+
+        resolve();
 
         /*
         // create directory (if not existing)

@@ -4,29 +4,18 @@ import * as fs from 'fs';
 /**
  * Get the date when the picture / video was taken
  */
-export function getTakenDate(filename: string, bar: any): Promise<any> {
+export function getTakenDate(filename: string): Promise<any> {
 
     return new Promise((resolve, reject) => {
 
         // TODO error handling (must create a proper data structure first)
         fs.readFile(filename, (readErr, data) => {
 
-            if (bar) {
-                bar.tick();
-            }
-
             if (readErr) {
                 reject(readErr);
-                if (bar) {
-                    bar.tick();
-                }
             } else {
 
                 exif.metadata(data, (exifErr: any, metadata: any) => {
-
-                    if (bar) {
-                        bar.tick();
-                    }
 
                     if (exifErr) {
                         reject(exifErr);

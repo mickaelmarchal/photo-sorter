@@ -12,20 +12,28 @@ if (typeof process.argv[2] !== 'undefined') {
 
 console.log('Browsing directory "' + fileUtils.getAbsolutePath(baseDir) + '", please wait...');
 
+
+// TODO refactor this: use promises and move to appropriate file
+function handleFile(idx: number, filesList: string[], bar: any, callback: any) {
+  exifUtils.getTakenDate(filesList[idx])
+    .then(result => fileUtils.moveFileToDirectory(baseDir, result, bar))
+    .catch(err => {
+      bar.interrupt('[ERROR] ' + err);
+    })
+    .finally(() => {
+      bar.tick();
+      if ((idx + 1) < filesList.length) {
+        handleFile(idx + 1, filesList, bar, resolve);
+      } else {
+        callback();
+      }
+    });
+}
+
+
 fileUtils.getFilesListInDirTree(baseDir).then((filesList: string[]) => {
-
   console.log(filesList.length + ' files found in directory "' + fileUtils.getAbsolutePath(baseDir) + '".');
-
-  const bar = new ProgressBar('[:bar] :percent', { total: filesList.length * 2, complete: '#', incomplete: '-', });
-  const a = 1;
-
-
-  for (const file of filesList) {
-    exifUtils.getTakenDate(file, bar)
-      .then(result => fileUtils.moveFileToDirectory(baseDir, result, bar))
-      // .then(newResult => xxxx)
-      .catch(err => bar.interrupt('UNHANDLED ERROR: ' + err))
-  };
-
+  const bar = new ProgressBar('[:bar] :percent', { total: filesList.length, complete: '#', incomplete: '-', });
+  handleFile(0, filesList, bar, () => console.log('FINISHED!'));
 });
 

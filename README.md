@@ -7,19 +7,23 @@ Subdirectories are created in the working directory and will be named upon the d
 
 If the date could not be found in EXIF metadata, the photo will not be moved.
 
+## Requirements
+
+This script requires nodejs >= 10.0 and typescript >= 2.8
+
 ## Install
 
 Just use `npm install` to install dependencies.
 
 ## Usage
 
-Sort pictures in the current directory:
+Sort pictures in the current directory and all sub-directories:
 
-    node index.js
+    npm start
 
-Sort pictures in a provide directory:
+Sort pictures in a provided directory and all sub-directories:
 
-    node index.js /path/to/directory
+    npm start /path/to/directory
 
 
 ## Example
@@ -37,7 +41,7 @@ A folder "MyPictures" containing various files:
 
 Run the script with the folder path as first argument:
 
-`node index.js /path/to/MyPictures`
+`npm start /path/to/MyPictures`
 
 
 The pictures will automatically sorted by date:
